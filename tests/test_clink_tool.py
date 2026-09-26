@@ -60,13 +60,10 @@ def test_registry_lists_roles():
     assert "default" in roles
     assert "default" in registry.list_roles("codex")
     codex_client = registry.get_client("codex")
-    # Verify codex uses --enable web_search_request (not --search which is unsupported by exec)
-    assert codex_client.config_args == [
-        "--json",
-        "--dangerously-bypass-approvals-and-sandbox",
-        "--enable",
-        "web_search_request",
-    ]
+    # AIKen fork: codex runs in a read-only sandbox, never with the bypass flag
+    args = codex_client.config_args
+    assert "--dangerously-bypass-approvals-and-sandbox" not in args
+    assert args[args.index("--sandbox") + 1] == "read-only"
 
 
 @pytest.mark.asyncio

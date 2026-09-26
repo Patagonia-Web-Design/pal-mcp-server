@@ -3,9 +3,9 @@
   "command": "codex",
   "additional_args": [
     "--json",
-    "--dangerously-bypass-approvals-and-sandbox",
-    "--enable",
-    "web_search_request"
+    "--sandbox",
+    "read-only",
+    "--skip-git-repo-check"
   ],
   "env": {},
   "roles": {

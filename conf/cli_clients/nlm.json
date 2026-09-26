@@ -1,0 +1,25 @@
+{
+  "name": "nlm",
+  "command": "nlm",
+  "parser": "json",
+  "parser_options": {
+    "content_path": "answer",
+    "metadata_paths": {
+      "conversation_id": "conversation_id",
+      "sources_used": "sources_used"
+    }
+  },
+  "prompt_delivery": "argv",
+  "prompt_args": [
+    "notebook",
+    "query",
+    "ffddfde0-8ca1-41b1-abda-a8d81df0d408",
+    "{prompt}",
+    "--json"
+  ],
+  "roles": {
+    "default": {
+      "prompt_path": "systemprompts/clink/nlm_default.txt"
+    }
+  }
+}

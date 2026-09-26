@@ -167,12 +167,13 @@ class TestBundledAgyClient:
         assert "--output-format" in client.internal_args
         assert "json" in client.internal_args
 
-    def test_permission_bypass_flag_is_visible_in_the_config(self):
-        """Kept in agy.json, matching codex.json, so it can be seen and removed."""
+    def test_agy_runs_read_only(self):
+        """AIKen fork: agy never auto-approves; plan mode reads files and denies shell."""
 
         client = ClinkRegistry().get_client("agy")
-        assert "--dangerously-skip-permissions" in client.config_args
-        assert "--dangerously-skip-permissions" not in client.internal_args
+        args = client.internal_args + client.config_args
+        assert "--dangerously-skip-permissions" not in args
+        assert args[args.index("--mode") + 1] == "plan"
 
     def test_agy_roles_match_the_other_clients(self):
         client = ClinkRegistry().get_client("agy")
