@@ -35,7 +35,7 @@ async def test_clink_tool_execute(monkeypatch):
 
     arguments = {
         "prompt": "Summarize the project",
-        "cli_name": "gemini",
+        "cli_name": "agy",
         "role": "default",
         "absolute_file_paths": [],
         "images": [],
@@ -48,15 +48,15 @@ async def test_clink_tool_execute(monkeypatch):
     assert payload["status"] in {"success", "continuation_available"}
     assert "Hello from Gemini" in payload["content"]
     metadata = payload.get("metadata", {})
-    assert metadata.get("cli_name") == "gemini"
+    assert metadata.get("cli_name") == "agy"
     assert metadata.get("command") == ["gemini", "-o", "json"]
 
 
 def test_registry_lists_roles():
     registry = get_registry()
     clients = registry.list_clients()
-    assert {"codex", "gemini"}.issubset(set(clients))
-    roles = registry.list_roles("gemini")
+    assert {"agy", "codex", "nlm"} == set(clients)
+    roles = registry.list_roles("agy")
     assert "default" in roles
     assert "default" in registry.list_roles("codex")
     codex_client = registry.get_client("codex")

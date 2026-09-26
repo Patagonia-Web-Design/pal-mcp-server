@@ -195,8 +195,8 @@ class TestAvailableCLIClients:
         monkeypatch.setattr("clink.registry._REGISTRY", None)
 
     def test_returns_only_clients_on_path(self, monkeypatch):
-        monkeypatch.setattr("clink.registry.shutil.which", lambda name: "/usr/bin/claude" if name == "claude" else None)
-        assert available_cli_clients() == ["claude"]
+        monkeypatch.setattr("clink.registry.shutil.which", lambda name: "/usr/bin/codex" if name == "codex" else None)
+        assert available_cli_clients() == ["codex"]
 
     def test_returns_empty_when_nothing_installed(self, monkeypatch):
         monkeypatch.setattr("clink.registry.shutil.which", lambda name: None)
