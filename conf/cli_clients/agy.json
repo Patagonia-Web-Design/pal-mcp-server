@@ -1,6 +1,6 @@
 {
   "name": "agy",
-  "command": "agy",
+  "command": "/Volumes/T7Shield/pal-mcp-server/bin/agy-aiken",
   "additional_args": [
     "--mode",
     "plan",
@@ -21,5 +21,6 @@
       "prompt_path": "systemprompts/clink/agy_codereviewer.txt",
       "role_args": []
     }
-  }
+  },
+  "working_dir": "/Users/alexsrebernic/.claude/ayudantes/agy-cwd"
 }

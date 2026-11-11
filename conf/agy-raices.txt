@@ -1,0 +1,19 @@
+# Carpetas que Gemini (agy, vía clink) puede leer. Una por línea; `~` se expande.
+# Solo carpetas: un archivo suelto o un comodín no tienen efecto en la regla de agy.
+# Dentro de cada una, bin/agy-aiken niega en cada llamada .env*, .envrc*, .dev.vars*,
+# claves, sesiones de WhatsApp, backups de D1 y carpetas clients/clientes.
+# NO agregar: ~/.aiken, ~/aiken-agent-os entero (audit/, _state/, vault/clients), la raíz del T7.
+
+# Lo que Claude deja para que Gemini mire (copias, no symlinks: el symlink se resuelve al destino)
+~/.claude/ayudantes/entrada
+
+# OS: código, skills, docs y el KB de referencias
+~/aiken-agent-os/skills
+~/aiken-agent-os/scripts
+~/aiken-agent-os/_index
+~/aiken-agent-os/docs
+~/aiken-agent-os/apps
+~/aiken-agent-os/workers
+~/aiken-agent-os/packages
+~/aiken-agent-os/tools
+~/aiken-agent-os/vault/03-Resources

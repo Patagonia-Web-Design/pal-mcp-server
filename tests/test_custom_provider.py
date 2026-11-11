@@ -316,6 +316,7 @@ class TestConfigureProvidersFunction:
             os.environ,
             {"GEMINI_API_KEY": "", "OPENAI_API_KEY": "", "OPENROUTER_API_KEY": "", "CUSTOM_API_URL": ""},
             clear=True,
-        ):
+        ), patch("server.available_cli_clients", return_value=[]):
+            # Sin CLI disponible: con `command` absoluto (bin/agy-aiken) vaciar PATH ya no lo esconde.
             with pytest.raises(ValueError, match="At least one API configuration is required"):
                 configure_providers()

@@ -1,0 +1,61 @@
+#!/usr/bin/env python3
+"""Lanza `agy` (Gemini) para clink con lectura limitada a carpetas permitidas.
+
+POR QUÉ: en headless `agy` niega `read_file` y devuelve vacío; sin lectura no puede hacer lo que
+se le delega (resumir archivos, ver imágenes, video, audio, PDFs). Medido 11/11/2026:
+  - la regla solo acepta CARPETAS: `read_file(<carpeta>)` cubre todo lo de adentro;
+    un archivo exacto o un comodín (`*`, `**`) no tienen efecto.
+  - un symlink se resuelve al destino: si el destino no está permitido, se niega.
+  - la carpeta desde donde corre se puede leer siempre: por eso corre desde una vacía.
+Como el deny tampoco acepta comodines, se recorre cada carpeta permitida en cada llamada
+(~0,04 s) y se niega por ruta exacta lo que parece secreto o datos de clientes.
+"""
+import json
+import os
+import re
+import sys
+from pathlib import Path
+
+AQUI = Path(__file__).resolve().parent
+RAICES = AQUI.parent / "conf" / "agy-raices.txt"
+PODAR = {"node_modules", ".git", "dist", ".next", ".wrangler", ".turbo", "__pycache__"}
+SENSIBLE = re.compile(
+    r"^(\.env(?!.*\.example$).*|\.envrc.*|\.dev\.vars.*|.*\.(pem|key|p12)|\.wwebjs_auth"
+    r"|d1-backups|clients|clientes|service-account.*\.json)$"
+)
+
+
+def raices() -> list[Path]:
+    salida = []
+    for linea in RAICES.read_text().splitlines():
+        linea = linea.split("#", 1)[0].strip()
+        if linea:
+            ruta = Path(os.path.expanduser(linea))
+            if ruta.is_dir():
+                salida.append(ruta)
+    return salida
+
+
+def sensibles(raiz: Path) -> list[Path]:
+    hallados = []
+    for actual, dirs, archivos in os.walk(raiz):
+        dirs[:] = [d for d in dirs if d not in PODAR and not d.startswith(".venv")]
+        for nombre in dirs + archivos:
+            if SENSIBLE.match(nombre):
+                hallados.append(Path(actual) / nombre)
+        dirs[:] = [d for d in dirs if not SENSIBLE.match(d)]
+    return hallados
+
+
+def main() -> None:
+    permitidas = raices()
+    negadas = [p for r in permitidas for p in sensibles(r)]
+    ajustes = {"permissions": {
+        "allow": [f"read_file({p})" for p in permitidas],
+        "deny": [f"read_file({p})" for p in negadas],
+    }}
+    os.execvp("agy", ["agy", "--settings", json.dumps(ajustes), *sys.argv[1:]])
+
+
+if __name__ == "__main__":
+    main()
