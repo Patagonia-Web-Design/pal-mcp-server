@@ -15,6 +15,13 @@ desde el 15/12/2025 (v9.8.2).
 | `codex` | Codex CLI (ChatGPT) | revisar un diff — el cupo es chico | `--sandbox read-only` |
 | `nlm` | NotebookLM, notebook "AIKen KB" | preguntas sobre el vault | es una consulta, no ejecuta nada |
 
+- `agy` corre por `bin/agy-aiken` (11/11/2026): en headless `agy` negaba `read_file` y devolvía
+  vacío, así que no podía leer nada de lo que se le pasaba. El envoltorio lo lanza desde una carpeta
+  vacía (`~/.claude/ayudantes/agy-cwd`) y le permite leer solo las carpetas de `conf/agy-raices.txt`.
+  Dentro de ellas niega en cada llamada `.env*`, `.envrc*`, `.dev.vars*`, claves, la sesión de
+  WhatsApp, los backups de D1 y `clients/`/`clientes/` (test: `tests/test_agy_aiken.py`). Medido: en
+  `allow` la regla de agy acepta carpetas (un archivo exacto o un comodín no tienen efecto); en
+  `deny` el archivo exacto sí anda; un symlink se resuelve al destino. Lee imagen, video y audio.
 - Se quitaron `gemini` (Gemini CLI fue reemplazada por Antigravity para Google One el
   18/06/2026) y `claude` (Claude Code se llamaría a sí mismo).
 - Los tests exigen solo lectura: con los flags de bypass de upstream, fallan.
